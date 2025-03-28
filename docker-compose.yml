@@ -19,7 +19,11 @@ services:
       - galaxy
     
   galaxy:
-    image: galaxy/galaxy-min:24.2.2
+    build:
+      context: .
+      dockerfile_inline: |
+        FROM galaxy/galaxy-min:24.2.2
+        RUN pip install --upgrade s3fs botocore boto3
     restart: unless-stopped
     group_add:
       - ${DOCKER_GID}
