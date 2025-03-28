@@ -54,7 +54,7 @@ Additionally, the `.env` file should contain the following information:
 > Run this in your shell for a quick start
 > 
 > ```bash
-> NUM=`getent group docker |cut -f3 -d: &&
+> NUM=`getent group docker |cut -f3 -d:` &&
 > sed -i "s/{{YOUR_DOCKER_GID}}/$NUM/; s/{{\([^}]*\)}}/\1/g" .env
 > ```
 
