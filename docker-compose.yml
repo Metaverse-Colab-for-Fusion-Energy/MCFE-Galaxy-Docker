@@ -166,7 +166,44 @@ services:
       mc mirror --watch /data minio/galaxy/library;
       exit 0;
       "
-      
+
+  gittea:
+    image: docker.gitea.com/gitea:1.23.6
+    container_name: ${PROJECT_NAME}-gittea
+    environment:
+      - USER_UID=1000
+      - USER_GID=1000
+      - GITEA__database__DB_TYPE=postgres
+      - GITEA__database__HOST=db:5432
+      - GITEA__database__NAME=gitea
+      - GITEA__database__USER=gitea
+      - GITEA__database__PASSWD=gitea
+    restart: always
+    networks:
+      - galaxy
+    volumes:
+      - gittea-data:/data
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - "3000:3000"
+      - "222:22"
+    depends_on:
+      - db
+
+  gittea-postgres:
+    image: postgres:14
+    container_name: ${PROJECT_NAME}-gittea-postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=gitea
+      - POSTGRES_PASSWORD=gitea
+      - POSTGRES_DB=gitea
+    networks:
+      - galaxy
+    volumes:
+      - gittea-postgres:/var/lib/postgresql/data
+
 networks:
   galaxy:
 
@@ -179,3 +216,7 @@ volumes:
     name: rabbitmq-data
   minio-data:
     name: minio-data
+  gittea-data:
+    name: gittea-data
+  gittea-postgres:
+    name: gittea-postgres
